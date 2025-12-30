@@ -9,7 +9,11 @@
 // Selection:
 //  - Takes an X and Y
 //  - Uses X and Y to determine cell to click
-
+// DisplayBoard:
+//  - Will use getBoard
+//  - Iterate through each row
+//      - Iterate through each cell to out marker
+//
 //IIFE:
 // const constant = (function () {return "test"})();
 // For single use
@@ -20,28 +24,49 @@
 // To create multiple
 function cell() {
     let isClicked = false;
-    let marker = "X";
+    let marker = "";
     return {isClicked, marker};
 }
-const board = (function (cell){
+function createBoard() {
     let row = 3;
     let col = 3;
     let board = []
+
     for (let i = 0; i < row; i++){
         let bRow = [];
         for (let j = 0; j < col; j++){
-            bRow.push([cell]);
+            bRow.push([cell()]);
         }
         board.push(bRow);
     }
     return board;
-})(cell());
+}
+const board = (function (){
+    return createBoard();
+})();
 
 const getBoard = () => board;
-const getCell = (x, y) => {
-    return getBoard()[x][y];
+
+const displayBoard = () => {
+    const board = getBoard();
+    let displayBoard = [];
+    for (let row of board) {
+        let displayRow = []
+        for (let cell of row) {
+            displayRow.push(cell[0].marker)
+        }
+        displayBoard.push(displayRow);
+    }
+    return displayBoard;
 };
+
+const getCell = (x, y) => {
+    return getBoard()[x][y][0];
+};
+
 const selectCell = (x, y) => {
     getCell(x,y).marker = 'X';
 };
-console.log(getBoard());
+
+selectCell(2,1)
+console.log(displayBoard())
