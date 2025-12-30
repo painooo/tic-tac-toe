@@ -32,17 +32,16 @@
 // function test() {return "test"};
 // const constant = test();
 // To create multiple
-
-const initBoard = (function(){
+function initBoard() {
     function cell() {
         let isClicked = false;
         let marker = "";
         return {isClicked, marker};
     }
+    let board = []
     function createBoard() {
         let row = 3;
         let col = 3;
-        let board = []
 
         for (let i = 0; i < row; i++){
             let bRow = [];
@@ -51,18 +50,12 @@ const initBoard = (function(){
             }
             board.push(bRow);
         }
-        return board;
     }
-    const board = (function (){
-        return createBoard();
-    })();
-    return board
-})();
-
+    return {createBoard, board};
+}
 const control = (function(){
-    const getBoard = () => initBoard;
     const displayBoard = () => {
-        const board = getBoard();
+        const board = initBoard.board;
         let displayBoard = [];
         for (let row of board) {
             let displayRow = []
@@ -75,7 +68,7 @@ const control = (function(){
     };
 
     const getCell = (x, y) => {
-        return getBoard()[x][y][0];
+        return initBoard.board()[x][y][0];
     };
 
     const selectCell = (x, y, marker) => {
@@ -93,4 +86,3 @@ const control = (function(){
     }
     return {displayBoard, selectCell, Player};
 })();
-control.displayBoard();
