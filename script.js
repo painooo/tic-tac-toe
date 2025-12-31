@@ -2,9 +2,13 @@
 // Call steps after round is initialized
 const gameStatus = document.querySelector("#gameStatus"); 
 const winStat = document.querySelector("#winStat");
+const startBtn = document.querySelector("#start");
+const clearBtn = document.querySelector("#clear");
 
 function initDisplay(play){
-    const gameBoard = document.querySelector("#gameBoard");
+    const gameBoard = document.createElement("div");
+    gameBoard.id="gameBoard";
+    document.body.appendChild(gameBoard);
     for (let i = 0; i < 3; i++){
         for (let j = 0; j < 3; j++) {
             const button = document.createElement("button");
@@ -18,7 +22,13 @@ function initDisplay(play){
             })
         }
     }
+    return(gameBoard);
 };
+function clearDisplay(displayBoard){
+    for (const child of displayBoard.children){
+        child.remove();
+    }
+}
 
 function initBoard(){
     function cell() {
@@ -152,7 +162,7 @@ function round(board) {
             }
         }
 };
-const game = (function() {
+function game() {
     const board = initBoard();
     const playRound = () => {
         board.createBoard();
@@ -160,5 +170,12 @@ const game = (function() {
         initDisplay(play);
     }
     return {playRound}
-})();
-game.playRound();
+};
+
+startBtn.addEventListener("click", () => {
+    init = game();
+    init.playRound();
+})
+clearBtn.addEventListener("click", () => {
+    (document.querySelector("#gameBoard")).remove()
+})
