@@ -100,18 +100,44 @@ function game() {
     const playRound = () => {
         initBoard.createBoard();
     }
-    return {playRound, selectPlayer, currPlayer}
+    const checkWin = () => {
+        const board = initBoard.board;
+        let isWin = false;
+        for (let row = 0; row < board.length; row++) {
+            let prev = undefined;
+            let count = 0;
+            for (let cell = 0; cell < board.length; cell++) {
+                if (board[row][cell][0].marker == playerOne.marker || board[row][cell][0].marker == playerTwo.marker) {
+                    if (board[row][cell][0].marker == prev) {
+                        count++;
+                    }
+                    prev = board[row][cell][0].marker;
+                }
+            }
+            if (count == 2) {
+                isWin = true;
+                break;
+            }
+        }
+        return isWin;
+    }
+    return {playRound, selectPlayer, currPlayer, checkWin}
 };
 
-let win = false;
 function round() {
     const currRound = game();
     currRound.playRound();
-    while(!win){
-        let cellX = parseInt(prompt(`pick a cell coord X ${currRound.currPlayer.name}`));
-        let cellY = parseInt(prompt(`pick a cell coord Y ${currRound.currPlayer.name}`));
-        control.selectCell(cellX, cellY, currRound.currPlayer.marker);
-        control.displayBoard();
+    let isWin = false;
+    while(!isWin){
+        let count = 3;
+        let cellY = parseInt(prompt(`pick a cell row ${currRound.currPlayer.name}`)); // Should be displayed on board as buttons (LATER)
+        let cellX = parseInt(prompt(`pick a cell column ${currRound.currPlayer.name}`));
+        control.selectCell(cellY, cellX, currRound.currPlayer.marker);
+        control.displayBoard();    
+        isWin = currRound.checkWin();
+        if (isWin) {
+            console.log(`${currRound.currPlayer.name} wins!!`)
+        }
         currRound.currPlayer = currRound.selectPlayer(currRound.currPlayer);
     }
 }
