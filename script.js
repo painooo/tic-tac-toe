@@ -1,4 +1,21 @@
-const initBoard = ( function(){
+// When button is pressed
+// Call steps after round is initialized
+
+const initDisplay = ( function(){
+    function createBoard() {
+        const gameBoard = document.querySelector(".gameBoard");
+        for (let i = 0; i > 3; i++){
+            for (let j = 0; j > 3; j++) {
+                const button = gameBoard.appendChild(document.createElement("button"));
+                button.id=`${i},${j}`;
+                button.classList.add("space");
+            }
+        }
+    }
+
+    return {createBoard};
+})();
+function initBoard(){
     function cell() {
         let isClicked = false;
         let marker = "";
@@ -18,10 +35,10 @@ const initBoard = ( function(){
         }
     }
     return {board, createBoard};
-})();
-const control = (function(){
+};
+
+function control(board) {
     const displayBoard = () => {
-        const board = initBoard.board;
         let displayBoard = [];
         for (let row of board) {
             let displayRow = []
@@ -34,7 +51,7 @@ const control = (function(){
     };
 
     const getCell = (x, y) => {
-        return initBoard.board[x][y][0];
+        return board[x][y][0];
     };
 
     const selectCell = (x, y, marker) => {
@@ -47,7 +64,7 @@ const control = (function(){
         }
     };
     return {displayBoard, selectCell};
-})();
+};
 
 function game() {
     function createPlayer(name,marker){
@@ -58,11 +75,11 @@ function game() {
     const playerTwo = createPlayer("playerTwo", "O");
     let currPlayer = playerOne;
     const selectPlayer = (player) => player == playerOne ? playerTwo : playerOne;
+    const board = initBoard();
     const playRound = () => {
-        initBoard.createBoard();
+        board.createBoard();
     }
     function checkWin() {
-        const board = initBoard.board;
         let isWin = false;
         let diagPrev = undefined;
         let diagCount = 0;
@@ -109,25 +126,32 @@ function game() {
         }
         return isWin;
     }
-    return {playRound, selectPlayer, currPlayer, checkWin}
+    return {playRound, selectPlayer, currPlayer, checkWin, board}
 };
-
 
 function round() {
     const currRound = game();
     currRound.playRound();
+    const cntrl = control(currRound.board.board);
     let isWin = false;
+    let count = 0;
     while(!isWin){
+        if (count != 9) {
         let cellY = parseInt(prompt(`pick a cell row ${currRound.currPlayer.name}`)); // Should be displayed on board as buttons (LATER)
         let cellX = parseInt(prompt(`pick a cell column ${currRound.currPlayer.name}`));
-        control.selectCell(cellY, cellX, currRound.currPlayer.marker);
-        control.displayBoard();    
+        cntrl.selectCell(cellY, cellX, currRound.currPlayer.marker);
+        cntrl.displayBoard();    
         isWin = currRound.checkWin();
         if (isWin) {
             console.log(`${currRound.currPlayer.name} wins!!`)
             break;
         }
         currRound.currPlayer = currRound.selectPlayer(currRound.currPlayer);
+        count++;
+    } else {
+        console.log(`TIEEEE!!!!`);
+        break;
+    }
     }
 }
 let rounds = 3;
