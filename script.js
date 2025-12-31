@@ -96,7 +96,6 @@ function game() {
     const playerTwo = createPlayer("playerTwo", "O");
     let currPlayer = playerOne;
     const selectPlayer = (player) => player == playerOne ? playerTwo : playerOne;
-    // currPlayer = selectPlayer(currPlayer); Usage example
     const playRound = () => {
         initBoard.createBoard();
     }
@@ -151,12 +150,12 @@ function game() {
     return {playRound, selectPlayer, currPlayer, checkWin}
 };
 
+
 function round() {
     const currRound = game();
     currRound.playRound();
     let isWin = false;
     while(!isWin){
-        let count = 3;
         let cellY = parseInt(prompt(`pick a cell row ${currRound.currPlayer.name}`)); // Should be displayed on board as buttons (LATER)
         let cellX = parseInt(prompt(`pick a cell column ${currRound.currPlayer.name}`));
         control.selectCell(cellY, cellX, currRound.currPlayer.marker);
@@ -164,8 +163,13 @@ function round() {
         isWin = currRound.checkWin();
         if (isWin) {
             console.log(`${currRound.currPlayer.name} wins!!`)
+            break;
         }
         currRound.currPlayer = currRound.selectPlayer(currRound.currPlayer);
     }
 }
-round();
+let rounds = 3;
+while(rounds != 0) {
+    round();
+    rounds--;
+}
