@@ -1,13 +1,15 @@
 // When button is pressed
 // Call steps after round is initialized
+const gameStatus = document.querySelector("#gameStatus"); 
+const winStat = document.querySelector("#winStat");
 
-const initDisplay = ( function(){
+function initDisplay(play){
     const gameBoard = document.querySelector("#gameBoard");
-    let play = round();
     for (let i = 0; i < 3; i++){
         for (let j = 0; j < 3; j++) {
             const button = document.createElement("button");
             gameBoard.appendChild(button);
+            button.textContent="";
             button.id=`${i}-${j}`;
             button.classList.add("space");
             button.addEventListener("click", (e) => {
@@ -16,7 +18,7 @@ const initDisplay = ( function(){
             })
         }
     }
-})();
+};
 
 function initBoard(){
     function cell() {
@@ -57,34 +59,17 @@ function control(board) {
         return board[x][y][0];
     };
 
-    const selectCell = (x, y, marker, target) => {
+    const selectCell = (x, y, marker,target) => {
         let cell = getCell(x,y);
         if (!cell.isClicked){
             cell.marker = marker;
             cell.isClicked = true;
-            target.textContent = currRound.currPlayer.marker;
+            target.textContent = marker;
         } else {
             console.log("Click a different cell");
         }
     };
-    return {displayBoard, selectCell};
-};
-
-function game() {
-    function createPlayer(name,marker){
-        let score = 0;
-        return {name, marker, score};
-    }
-    const playerOne = createPlayer("playerOne", "X");
-    const playerTwo = createPlayer("playerTwo", "O");
-    let currPlayer = playerOne;
-    const selectPlayer = (player) => player == playerOne ? playerTwo : playerOne;
-    const boardInit = initBoard();
-    const playRound = () => {
-        boardInit.createBoard();
-    }
     function checkWin() {
-        const board = boardInit.board;
         let isWin = false;
         let diagPrev = undefined;
         let diagCount = 0;
@@ -131,30 +116,49 @@ function game() {
         }
         return isWin;
     }
-    return {playRound, selectPlayer, currPlayer, checkWin, boardInit}
-};
 
-function round() {
-    const currRound = game();
-    currRound.playRound();
-    const cntrl = control(currRound.boardInit.board);
+    function createPlayer(name,marker){
+        let score = 0;
+        return {name, marker, score};
+    }
+    const playerOne = createPlayer("playerOne", "X");
+    const playerTwo = createPlayer("playerTwo", "O");
+
+    let currPlayer = playerOne;
+    const selectPlayer = (player) => player == playerOne ? playerTwo : playerOne;
+    return {displayBoard, selectCell, checkWin, selectPlayer, currPlayer};
+};
+function round(board) {
+    const cntrl = control(board);
     let isWin = false;
     let count = 0;
-    return function play(cellY, cellX, target){
-        if (count != 9) {
-            if (!isWin){
-                cntrl.selectCell(cellY, cellX, currRound.currPlayer.marker, target);
-                cntrl.displayBoard();    
-                isWin = currRound.checkWin();
-                if (isWin) {
-                    console.log(`${currRound.currPlayer.name} wins!!`)
-
+        return function play(cellY, cellX, target){
+            if (count != 9) {
+                if (!isWin){
+                    cntrl.selectCell(cellY, cellX, cntrl.currPlayer.marker, target);
+                    cntrl.displayBoard();    
+                    isWin = cntrl.checkWin();
+                    if (isWin) {
+                        console.log(`${cntrl.currPlayer.name} wins!!`)
+                        winStat.textContent = cntrl.currPlayer.name + " wins!!"
+                    }
+                    cntrl.currPlayer = cntrl.selectPlayer(cntrl.currPlayer);
+                    gameStatus.textContent = "Current player: "+cntrl.currPlayer.name;
+                    count++;
                 }
-                currRound.currPlayer = currRound.selectPlayer(currRound.currPlayer);
-                count++;
+            }else {
+                console.log(`TIEEEE!!!!`);
+                gameStatus.textContent = "TIEEEE!!"
             }
-        }else {
-            console.log(`TIEEEE!!!!`);
         }
+};
+const game = (function() {
+    const board = initBoard();
+    const playRound = () => {
+        board.createBoard();
+        const play = round(board.board);
+        initDisplay(play);
     }
-}
+    return {playRound}
+})();
+game.playRound();
