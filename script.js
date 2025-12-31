@@ -1,20 +1,4 @@
-// When button is pressed
-// Call steps after round is initialized
 
-const initDisplay = ( function(){
-    function createBoard() {
-        const gameBoard = document.querySelector(".gameBoard");
-        for (let i = 0; i > 3; i++){
-            for (let j = 0; j > 3; j++) {
-                const button = gameBoard.appendChild(document.createElement("button"));
-                button.id=`${i},${j}`;
-                button.classList.add("space");
-            }
-        }
-    }
-
-    return {createBoard};
-})();
 function initBoard(){
     function cell() {
         let isClicked = false;
