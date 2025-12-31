@@ -33,4 +33,4 @@ IIFE:
 Factory Functions:
  function test() {return "test"};
  const constant = test();
- To create multipl
+ To create multiple

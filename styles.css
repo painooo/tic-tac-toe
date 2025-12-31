@@ -1,0 +1,9 @@
+#gameBoard {
+    background:black;
+    border: 2px black dashed;
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    height:200px;
+    width:200px;
+    gap:10px;
+}
