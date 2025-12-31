@@ -32,7 +32,7 @@
 // function test() {return "test"};
 // const constant = test();
 // To create multiple
-function initBoard() {
+const initBoard = ( function(){ // Make this IIFE
     function cell() {
         let isClicked = false;
         let marker = "";
@@ -51,8 +51,8 @@ function initBoard() {
             board.push(bRow);
         }
     }
-    return {createBoard, board};
-}
+    return {board, createBoard};
+})();
 const control = (function(){
     const displayBoard = () => {
         const board = initBoard.board;
@@ -68,7 +68,7 @@ const control = (function(){
     };
 
     const getCell = (x, y) => {
-        return initBoard.board()[x][y][0];
+        return initBoard.board[x][y][0];
     };
 
     const selectCell = (x, y, marker) => {
