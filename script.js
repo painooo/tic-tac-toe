@@ -100,21 +100,29 @@ function game() {
     const playRound = () => {
         initBoard.createBoard();
     }
-    const checkWin = () => {
+    function checkWin() {
         const board = initBoard.board;
         let isWin = false;
         for (let row = 0; row < board.length; row++) {
-            let prev = undefined;
-            let count = 0;
+            let rowPrev = undefined;
+            let rowCount = 0;
+            let columnPrev = undefined;
+            let columnCount = 0;
             for (let cell = 0; cell < board.length; cell++) {
-                if (board[row][cell][0].marker == playerOne.marker || board[row][cell][0].marker == playerTwo.marker) {
-                    if (board[row][cell][0].marker == prev) {
-                        count++;
+                if (board[row][cell][0].marker == "X" || board[row][cell][0].marker == "O") {
+                    if (board[row][cell][0].marker == rowPrev) {
+                        rowCount++;
                     }
-                    prev = board[row][cell][0].marker;
+                    rowPrev = board[row][cell][0].marker;
                 }
+                if (board[cell][row][0].marker == "X" || board[cell][row][0].marker == "O") {
+                    if (board[cell][row][0].marker == columnPrev) {
+                            columnCount++;
+                        }
+                        columnPrev = board[cell][row][0].marker;
+                    }
             }
-            if (count == 2) {
+            if (rowCount == 1 || columnCount == 1) {
                 isWin = true;
                 break;
             }
