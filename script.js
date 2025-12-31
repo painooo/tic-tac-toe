@@ -158,7 +158,7 @@ function round(board) {
                 }
             }else {
                 console.log(`TIEEEE!!!!`);
-                gameStatus.textContent = "TIEEEE!!"
+                winStat.textContent = "TIEEEE!!"
             }
         }
 };
