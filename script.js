@@ -23,6 +23,10 @@
 //  - Check each row
 //  - Check is column board[0][1] board[1][1]  board[2][1]
 //  - Check diags. (Dunno yet)
+// Game:
+//  - Will have:
+//      - selectPlayer (alternate between)
+//      - play
 
 //IIFE:
 // const constant = (function () {return "test"})();
@@ -32,7 +36,7 @@
 // function test() {return "test"};
 // const constant = test();
 // To create multiple
-const initBoard = ( function(){ // Make this IIFE
+const initBoard = ( function(){
     function cell() {
         let isClicked = false;
         let marker = "";
@@ -80,9 +84,35 @@ const control = (function(){
             console.log("Click a different cell");
         }
     };
-
-    function Player(name,marker){
-        return {name, marker};
-    }
-    return {displayBoard, selectCell, Player};
+    return {displayBoard, selectCell};
 })();
+
+function game() {
+    function createPlayer(name,marker){
+        let score = 0;
+        return {name, marker, score};
+    }
+    const playerOne = createPlayer("john", "X"); // User should be able to control the names
+    const playerTwo = createPlayer("ave", "O");
+    let currPlayer = playerOne;
+    const selectPlayer = (player) => player == playerOne ? playerTwo : playerOne;
+    // currPlayer = selectPlayer(currPlayer); Usage example
+    const playRound = () => {
+        initBoard.createBoard();
+    }
+    return {playRound, selectPlayer, currPlayer}
+};
+
+let win = false;
+function round() {
+    const currRound = game();
+    currRound.playRound();
+    while(!win){
+        let cellX = parseInt(prompt(`pick a cell coord X ${currRound.currPlayer.name}`));
+        let cellY = parseInt(prompt(`pick a cell coord Y ${currRound.currPlayer.name}`));
+        control.selectCell(cellX, cellY, currRound.currPlayer.marker);
+        control.displayBoard();
+        currRound.currPlayer = currRound.selectPlayer(currRound.currPlayer);
+    }
+}
+round();
