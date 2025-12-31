@@ -92,8 +92,8 @@ function game() {
         let score = 0;
         return {name, marker, score};
     }
-    const playerOne = createPlayer("john", "X"); // User should be able to control the names
-    const playerTwo = createPlayer("ave", "O");
+    const playerOne = createPlayer("playerOne", "X");
+    const playerTwo = createPlayer("playerTwo", "O");
     let currPlayer = playerOne;
     const selectPlayer = (player) => player == playerOne ? playerTwo : playerOne;
     // currPlayer = selectPlayer(currPlayer); Usage example
@@ -103,11 +103,30 @@ function game() {
     function checkWin() {
         const board = initBoard.board;
         let isWin = false;
+        let diagPrev = undefined;
+        let diagCount = 0;
+
+        let invDiagPrev = undefined;
+        let invDiagCount = 0;
         for (let row = 0; row < board.length; row++) {
             let rowPrev = undefined;
             let rowCount = 0;
+
             let columnPrev = undefined;
             let columnCount = 0;
+
+            if (board[row][row][0].marker == "X" || board[row][row][0].marker == "O") {
+                if (board[row][row][0].marker == invDiagPrev) {
+                    invDiagCount++;
+                }
+                invDiagPrev = board[row][row][0].marker;
+            }
+            if (board[2-row][row][0].marker == "X" || board[2-row][row][0].marker == "O") {
+                if (board[2-row][row][0].marker == diagPrev) {
+                    diagCount++;
+                }
+                diagPrev = board[row][row][0].marker;
+            }
             for (let cell = 0; cell < board.length; cell++) {
                 if (board[row][cell][0].marker == "X" || board[row][cell][0].marker == "O") {
                     if (board[row][cell][0].marker == rowPrev) {
@@ -122,7 +141,7 @@ function game() {
                         columnPrev = board[cell][row][0].marker;
                     }
             }
-            if (rowCount == 1 || columnCount == 1) {
+            if (rowCount == 2 || columnCount == 2 || diagCount == 2 || invDiagCount == 2) {
                 isWin = true;
                 break;
             }
